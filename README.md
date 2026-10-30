@@ -1,6 +1,6 @@
 # `zai-org/GLM-5.3-BF16` (`1.51 TB` Unquantized BF16) Serving & Benchmarking on Cloud TPU `v7x`
 
-End-to-end multi-host serving configuration, benchmark harness, and empirical latency/throughput results for the unquantized **[`zai-org/GLM-5.3-BF16`](https://huggingface.co/zai-org/GLM-5.3-BF16)** (`744B` parameters, **`1,506.7 GB` Pure BF16** across `282` safetensors shards) on a **single TPU `v7x-16` slice (`2x2x4`, 16 chips / 32 TensorCores, `3,072 GiB` HBM3e)** with **`vllm 0.32.0` + `vllm-torchtpu` + `TorchTPU 0.2.0` GA**.
+End-to-end multi-host serving configuration, benchmark harness, speculative decoding (`MTP=3` `IndexShare=True`), and empirical latency/throughput results for the unquantized **[`zai-org/GLM-5.3-BF16`](https://huggingface.co/zai-org/GLM-5.3-BF16)** (`744B` parameters, **`1,506.7 GB` Pure BF16** across `282` safetensors shards) on a **single TPU `v7x-16` slice (`2x2x4`, 16 chips / 32 TensorCores, `3,072 GiB` HBM3e)** with **`vllm 0.32.0` + `vllm-torchtpu` + `TorchTPU 0.2.0` GA**.
 
 ---
 
@@ -48,9 +48,7 @@ Because TPU `v7x` holds `3,072 GiB` HBM3e with `118 TB/s` aggregate HBM bandwidt
 ├── scripts/
 │   ├── run_tpu_benchmark_sweep.py              # Streaming OpenAI benchmark + prefix-cache + InferenceX driver
 │   └── stage_hf_to_gcs.py                      # Parallel 282-shard Hugging Face -> GCS stager
-├── k8s/
-│   ├── v7x-16-spot-pass4-glm53-bf16.yaml       # GKE LeaderWorkerSet + Benchmark Job for TPU v7x-16
-│   └── v5p-32-spot-glm53-bf16.yaml             # GKE LeaderWorkerSet manifest for TPU v5p-32 (2x4x4)
+├── k8s/                                        # GKE LeaderWorkerSet + Benchmark Job manifests (Standard & MTP=3)
 └── results/                                    # Raw JSON & Markdown benchmark outputs
 ```
 
@@ -61,4 +59,7 @@ python3 scripts/stage_hf_to_gcs.py --repo-id zai-org/GLM-5.3-BF16 --gcs-prefix g
 # 2. Deploy LeaderWorkerSet & Benchmark Job on TPU v7x-16 (2x2x4)
 kubectl create configmap tpu-bench-script --from-file=run_tpu_benchmark_sweep.py=scripts/run_tpu_benchmark_sweep.py
 kubectl apply -f k8s/v7x-16-spot-pass4-glm53-bf16.yaml
+
+# 3. Deploy Pure BF16 + MTP=3 IndexShare=True Speculative Decoding
+kubectl apply -f k8s/v7x-16-spot-pass4b-glm53-bf16-mtp3.yaml
 ```

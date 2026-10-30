@@ -1,6 +1,6 @@
 # `zai-org/GLM-5.3-BF16` (`1.51 TB` Unquantized BF16) Serving & Benchmarking on Cloud TPU `v7x`
 
-End-to-end multi-host serving configuration, benchmark harness, speculative decoding (`MTP=3` `IndexShare=True`), and empirical latency/throughput results for the unquantized **[`zai-org/GLM-5.3-BF16`](https://huggingface.co/zai-org/GLM-5.3-BF16)** (`744B` parameters, **`1,506.7 GB` Pure BF16** across `282` safetensors shards) on a **single TPU `v7x-16` slice (`2x2x4`, 16 chips / 32 TensorCores, `3,072 GiB` HBM3e)** with **`vllm 0.32.0` + `vllm-torchtpu` + `TorchTPU 0.2.0` GA**.
+End-to-end multi-host serving configuration, benchmark harness (`0%`, `80%`, and `95%` prefix-cache hit), speculative decoding (`MTP=3` `IndexShare=True`), and empirical latency/throughput results for the unquantized **[`zai-org/GLM-5.3-BF16`](https://huggingface.co/zai-org/GLM-5.3-BF16)** (`744B` parameters, **`1,506.7 GB` Pure BF16** across `282` safetensors shards) on a **single TPU `v7x-16` slice (`2x2x4`, 16 chips / 32 TensorCores, `3,072 GiB` HBM3e)** with **`vllm 0.32.0` + `vllm-torchtpu` + `TorchTPU 0.2.0` GA**.
 
 ---
 
@@ -35,7 +35,7 @@ Because TPU `v7x` holds `3,072 GiB` HBM3e with `118 TB/s` aggregate HBM bandwidt
 | `context_sweep` | `8,192 : 1,024` | `0%` | `4` | **`143.74`** | **`+33.3%`** | **`41.59`** | `3,860.3` | **`24.06`** | `24.11` |
 | `context_sweep` | `15,000 : 1,024` | `0%` | `4` | **`126.36`** | **`+27.8%`** | **`38.69`** | `5,832.0` | **`25.93`** | `27.44` |
 
-- **Official `InferenceX` (`c=8`, `16` prompts, `4096:1024`):** **`1,070.42` total tok/s (`+18.2%` vs FP8)** / **`209.74` output tok/s (`+18.2%`)** | Median ITL **`24.39 ms`** (`P90 ITL 25.21 ms`).
+- **First-Hand `InferenceX` Cross-Check on `v7x-16` (`c=8`, `16` prompts, `4096:1024` via [`SemiAnalysisAI/InferenceX@f6c1f5b5`](https://github.com/SemiAnalysisAI/InferenceX)):** **`1,070.42` total tok/s (`+18.2%` vs FP8)** / **`209.74` output tok/s (`+18.2%`)** | Median ITL **`24.39 ms`** (`P90 ITL 25.21 ms`), raw output archived in [`results/`](./results/).
 
 ---
 
@@ -44,9 +44,9 @@ Because TPU `v7x` holds `3,072 GiB` HBM3e with `118 TB/s` aggregate HBM bandwidt
 ```text
 ├── README.md
 ├── docker/
-│   └── Dockerfile                              # vllm 0.32.0 + TorchTPU 0.2.0 GA benchmark image
+│   └── Dockerfile                              # vllm 0.32.0 + TorchTPU 0.2.0 GA + SemiAnalysisAI/InferenceX@f6c1f5b5
 ├── scripts/
-│   ├── run_tpu_benchmark_sweep.py              # Streaming OpenAI benchmark + prefix-cache + InferenceX driver
+│   ├── run_tpu_benchmark_sweep.py              # Streaming OpenAI benchmark + 0%/80%/95% prefix-cache + InferenceX driver
 │   └── stage_hf_to_gcs.py                      # Parallel 282-shard Hugging Face -> GCS stager
 ├── k8s/                                        # GKE LeaderWorkerSet + Benchmark Job manifests (Standard & MTP=3)
 └── results/                                    # Raw JSON & Markdown benchmark outputs
@@ -54,7 +54,7 @@ Because TPU `v7x` holds `3,072 GiB` HBM3e with `118 TB/s` aggregate HBM bandwidt
 
 ```bash
 # 1. Stage zai-org/GLM-5.3-BF16 (1.51 TB, 282 shards) to GCS
-python3 scripts/stage_hf_to_gcs.py --repo-id zai-org/GLM-5.3-BF16 --gcs-prefix gs://YOUR_GCS_BUCKET/models/zai-org/GLM-5.3-BF16
+python3 scripts/stage_hf_to_gcs.py --repos zai-org/GLM-5.3-BF16 --bucket YOUR_GCS_BUCKET --prefix models
 
 # 2. Deploy LeaderWorkerSet & Benchmark Job on TPU v7x-16 (2x2x4)
 kubectl create configmap tpu-bench-script --from-file=run_tpu_benchmark_sweep.py=scripts/run_tpu_benchmark_sweep.py

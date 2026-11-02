@@ -1,12 +1,12 @@
-# `zai-org/GLM-5.3-BF16` (`1.51 TB` Unquantized BF16) Serving & Benchmarking on Cloud TPU `v7x`
+# `GLM-5.3-BF16` Serving on TPU `v7x` with `vllm-torchtpu`
 
-End-to-end multi-host serving configuration, benchmark harness (`0%`, `80%`, and `95%` prefix-cache hit), speculative decoding (`MTP=3` `IndexShare=True`), and empirical latency/throughput results for the unquantized **[`zai-org/GLM-5.3-BF16`](https://huggingface.co/zai-org/GLM-5.3-BF16)** (`744B` parameters, **`1,506.7 GB` Pure BF16** across `282` safetensors shards) on a **single TPU `v7x-16` slice (`2x2x4`, 16 chips / 32 TensorCores, `3,072 GiB` HBM3e)** with **`vllm 0.32.0` + `vllm-torchtpu` + `TorchTPU 0.2.0` GA**.
+Multi-host serving configuration, benchmark harness (`0%`, `80%`, and `95%` prefix-cache hit), speculative decoding (`MTP=3` `IndexShare=True`), and latency/throughput results for unquantized **[`zai-org/GLM-5.3-BF16`](https://huggingface.co/zai-org/GLM-5.3-BF16)** (`744B` parameters, `1,506.7 GB` BF16 across `282` safetensors shards) on a **single TPU `v7x-16` slice (`2x2x4`, 16 chips / 32 TensorCores, `3,072 GiB` HBM3e)** with **`vllm 0.32.0` + `vllm-torchtpu` + `TorchTPU 0.2.0` GA**.
 
-- **1-Click Empirical Proof:** [`REPORT.md`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/REPORT.md) · [`summary.json`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/summary.json) · [`inferencex_in4096_out1024_c8.json`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/inferencex_in4096_out1024_c8.json) · Manifest: [`v7x-16-spot-pass4-glm53-bf16.yaml`](./k8s/v7x-16-spot-pass4-glm53-bf16.yaml)
+- **Benchmark Outputs:** [`REPORT.md`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/REPORT.md) · [`summary.json`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/summary.json) · [`inferencex_in4096_out1024_c8.json`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/inferencex_in4096_out1024_c8.json) · Manifest: [`v7x-16-spot-pass4-glm53-bf16.yaml`](./k8s/v7x-16-spot-pass4-glm53-bf16.yaml)
 
 ---
 
-## 1. Model Overview — [`zai-org/GLM-5.3-BF16`](https://huggingface.co/zai-org/GLM-5.3-BF16)
+## 1. Model Overview
 
 | Property | Value |
 |---|---|
@@ -17,11 +17,11 @@ End-to-end multi-host serving configuration, benchmark harness (`0%`, `80%`, and
 
 ---
 
-## 2. Benchmark Results → Exact Script (`#line`), Manifest & Proof (`v7x-16` Pure BF16 vs Block-FP8 at `TP=4, DP=8, EP=32`)
+## 2. Benchmark Results (`v7x-16` BF16 vs Block-FP8 at `TP=4, DP=8, EP=32`)
 
-Because TPU `v7x` holds `3,072 GiB` HBM3e with `118 TB/s` aggregate HBM bandwidth, the entire `1.51 TB` unquantized BF16 checkpoint fits on **one `v7x-16` slice** with `5.19M` KV tokens of headroom — and **outperforms `128×128` block-FP8 by up to `+41.2%` across `c=1..16`** by executing native BF16 MXU matmuls without runtime block-FP8 weight dequantization overhead:
+TPU `v7x-16` provides `3,072 GiB` HBM3e (`118 TB/s` aggregate HBM bandwidth), allowing the `1.51 TB` unquantized BF16 checkpoint to fit on one `v7x-16` slice with `5.19M` KV tokens of headroom. At `c=1..16`, native BF16 MXU matmuls improve output throughput by `+3.6%` to `+41.2%` compared to `128×128` block-FP8 by avoiding runtime block-FP8 weight dequantization overhead:
 
-| Workload Suite (`Script Anchor`) | Input : Output | Prefix Hit | Conc | Pure BF16 Out TPS | vs Block-FP8 | Mean Stream TPS | Mean TTFT (ms) | Mean TPOT (ms) | Manifest & Result Proof |
+| Workload Suite (`Script Anchor`) | Input : Output | Prefix Hit | Conc | BF16 Out TPS | vs Block-FP8 | Mean Stream TPS | Mean TTFT (ms) | Mean TPOT (ms) | Manifest & Result Files |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---|
 | [`concurrency_0pct_cache` (`#L346`)](./scripts/run_tpu_benchmark_sweep.py#L346-L354) | `4,096 : 1,024` | `0%` | `1` | **`42.23`** | **`+40.8%`** | **`46.64`** | `2,313.0` | **`21.44`** | [`yaml`](./k8s/v7x-16-spot-pass4-glm53-bf16.yaml) · [`REPORT`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/REPORT.md) · [`JSON`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/summary.json) |
 | [`concurrency_0pct_cache` (`#L346`)](./scripts/run_tpu_benchmark_sweep.py#L346-L354) | `4,096 : 1,024` | `0%` | `4` | **`158.41`** | **`+34.9%`** | **`42.95`** | `2,015.4` | **`23.29`** | [`yaml`](./k8s/v7x-16-spot-pass4-glm53-bf16.yaml) · [`REPORT`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/REPORT.md) · [`JSON`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-prefixcache__20261030T145414Z/summary.json) |

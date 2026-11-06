@@ -41,6 +41,20 @@ TPU `v7x-16` provides `3,072 GiB` HBM3e (`118 TB/s` aggregate HBM bandwidth), al
 
 ---
 
+## 2B. Pure `BF16` + `MTP=3` (`IndexShare=True`) Speculative Decoding (`Pass 4B` on Spot `v7x-16`)
+
+Enabling native `MTP=3` (`--speculative-config='{"method":"mtp","num_speculative_tokens":3}'`, `index_share_for_mtp_iteration=True`) on unquantized `zai-org/GLM-5.3-BF16` (`TP=4, DP=8, EP=32` via [`k8s/v7x-16-spot-pass4b-glm53-bf16-mtp3.yaml`](./k8s/v7x-16-spot-pass4b-glm53-bf16-mtp3.yaml)) further reduces single-stream decode latency before the Spot `2x2x4` slice experienced a host preemption partway through `c=8`:
+
+| Workload Suite | Input : Output | Prefix Hit | Conc | BF16 + `MTP=3` Out TPS | Mean Stream TPS (vs non-MTP BF16) | Mean TTFT (ms) | P90 TTFT (ms) | Mean TPOT (ms) | OK / Fail | Result Files |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| `concurrency_0pct_cache` | `4,096 : 1,024` | `0%` | `1` | **`51.69`** (`+22.4%`) | **`59.54`** (**`+27.7%`** vs `46.64`) | `2,399.4` | `2,424.0` | **`17.02`** (`-20.6%`) | **`8 / 0`** | [`REPORT`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-mtp3-prefixcache__20261030T201157Z/REPORT.md) · [`JSON`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-mtp3-prefixcache__20261030T201157Z/summary.json) |
+| `concurrency_0pct_cache` | `4,096 : 1,024` | `0%` | `4` | **`140.85`** | **`51.73`** (**`+20.4%`** vs `42.95`) | `2,244.3` | `3,349.6` | **`20.68`** (`-11.2%`) | **`8 / 0`** | [`REPORT`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-mtp3-prefixcache__20261030T201157Z/REPORT.md) · [`JSON`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-mtp3-prefixcache__20261030T201157Z/summary.json) |
+| `concurrency_0pct_cache` *(Spot preempted mid-cell)* | `4,096 : 1,024` | `0%` | `8` | `135.97`* | `49.42`* | `2,540.9` | `2,948.5` | `22.96` | `7 / 9`* | [`REPORT`](./results/v7x-16-spot-2x2x4-32cores__zai-org__GLM-5.3-BF16__glm53-bf16-tp4-dp8-ep32-mtp3-prefixcache__20261030T201157Z/REPORT.md) |
+
+*(\*The `v7x-16` Spot slice was preempted during the `c=8` cell after `7/16` requests completed; subsequent cells in `20261030T201157Z` recorded `ERR` against the terminated endpoint.)*
+
+---
+
 ## 3. Repository Structure & Reproduction
 
 - [`docker/Dockerfile`](./docker/Dockerfile) — `vllm 0.32.0` + `TorchTPU 0.2.0` GA + `SemiAnalysisAI/InferenceX@f6c1f5b5`

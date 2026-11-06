@@ -1,0 +1,363 @@
+{
+  "meta": {
+    "timestamp_utc": "20261030T201157Z",
+    "slice_name": "v7x-16-spot-2x2x4-32cores",
+    "config_tag": "glm53-bf16-tp4-dp8-ep32-mtp3-prefixcache",
+    "model_id": "zai-org/GLM-5.3-BF16",
+    "tokenizer": "/models/models/zai-org/GLM-5.3-BF16",
+    "max_input_len": 15000,
+    "output_len": 1024
+  },
+  "sanity": {
+    "elapsed_s": 2.684,
+    "usage": {
+      "prompt_tokens": 28,
+      "total_tokens": 156,
+      "completion_tokens": 128,
+      "prompt_tokens_details": null,
+      "completion_tokens_details": {
+        "reasoning_tokens": 128
+      }
+    },
+    "sample_output": "{'role': 'assistant', 'content': None, 'refusal': None, 'annotations': None, 'audio': None, 'function_call': None, 'reasoning': 'The user wants an explanation of Mixture-of-Experts (MoE) routing on TPUs in two concise sentences. Let me think about what\\'s essential here.\\n\\nMoE routing basics: In a Mixture-of-Experts layer, instead of every token passing through the same feedforward network, a router (gating network) assigns each token to one or more \"expert\" sub-networks based on learned weight"
+  },
+  "results": [
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 1,
+      "num_prompts": 8,
+      "prefix_hit_ratio": 0.0,
+      "successful": 8,
+      "failed": 0,
+      "wall_s": 158.49,
+      "total_output_tps": 51.69,
+      "mean_stream_tps": 59.54,
+      "p50_stream_tps": 62.85,
+      "p10_stream_tps": 52.88,
+      "mean_e2e_tps": 52.22,
+      "mean_ttft_ms": 2399.4,
+      "p50_ttft_ms": 2410.8,
+      "p90_ttft_ms": 2424.0,
+      "p99_ttft_ms": 2491.8,
+      "mean_tpot_ms": 17.02,
+      "p90_tpot_ms": 18.91,
+      "suite": "concurrency_0pct_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 4,
+      "num_prompts": 8,
+      "prefix_hit_ratio": 0.0,
+      "successful": 8,
+      "failed": 0,
+      "wall_s": 58.16,
+      "total_output_tps": 140.85,
+      "mean_stream_tps": 51.73,
+      "p50_stream_tps": 49.05,
+      "p10_stream_tps": 40.25,
+      "mean_e2e_tps": 46.11,
+      "mean_ttft_ms": 2244.3,
+      "p50_ttft_ms": 2542.0,
+      "p90_ttft_ms": 3349.6,
+      "p99_ttft_ms": 3350.8,
+      "mean_tpot_ms": 20.68,
+      "p90_tpot_ms": 24.85,
+      "suite": "concurrency_0pct_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 8,
+      "num_prompts": 16,
+      "prefix_hit_ratio": 0.0,
+      "successful": 7,
+      "failed": 9,
+      "wall_s": 52.72,
+      "total_output_tps": 135.97,
+      "mean_stream_tps": 49.42,
+      "p50_stream_tps": 47.6,
+      "p10_stream_tps": 34.32,
+      "mean_e2e_tps": 43.26,
+      "mean_ttft_ms": 2540.9,
+      "p50_ttft_ms": 2946.8,
+      "p90_ttft_ms": 2948.5,
+      "p99_ttft_ms": 2949.9,
+      "mean_tpot_ms": 22.96,
+      "p90_tpot_ms": 29.14,
+      "suite": "concurrency_0pct_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 16,
+      "num_prompts": 32,
+      "prefix_hit_ratio": 0.0,
+      "successful": 0,
+      "failed": 32,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "concurrency_0pct_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 32,
+      "num_prompts": 64,
+      "prefix_hit_ratio": 0.0,
+      "successful": 0,
+      "failed": 64,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "concurrency_0pct_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 64,
+      "num_prompts": 128,
+      "prefix_hit_ratio": 0.0,
+      "successful": 0,
+      "failed": 128,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "concurrency_0pct_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 1,
+      "num_prompts": 8,
+      "prefix_hit_ratio": 0.8,
+      "successful": 0,
+      "failed": 8,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_80pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 4,
+      "num_prompts": 8,
+      "prefix_hit_ratio": 0.8,
+      "successful": 0,
+      "failed": 8,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_80pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 8,
+      "num_prompts": 16,
+      "prefix_hit_ratio": 0.8,
+      "successful": 0,
+      "failed": 16,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_80pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 16,
+      "num_prompts": 32,
+      "prefix_hit_ratio": 0.8,
+      "successful": 0,
+      "failed": 32,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_80pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 32,
+      "num_prompts": 64,
+      "prefix_hit_ratio": 0.8,
+      "successful": 0,
+      "failed": 64,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_80pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 64,
+      "num_prompts": 128,
+      "prefix_hit_ratio": 0.8,
+      "successful": 0,
+      "failed": 128,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_80pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 1,
+      "num_prompts": 8,
+      "prefix_hit_ratio": 0.95,
+      "successful": 0,
+      "failed": 8,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_95pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 4,
+      "num_prompts": 8,
+      "prefix_hit_ratio": 0.95,
+      "successful": 0,
+      "failed": 8,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_95pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 8,
+      "num_prompts": 16,
+      "prefix_hit_ratio": 0.95,
+      "successful": 0,
+      "failed": 16,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_95pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 16,
+      "num_prompts": 32,
+      "prefix_hit_ratio": 0.95,
+      "successful": 0,
+      "failed": 32,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_95pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 32,
+      "num_prompts": 64,
+      "prefix_hit_ratio": 0.95,
+      "successful": 0,
+      "failed": 64,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_95pct_prefix_cache"
+    },
+    {
+      "input_tokens": 4096,
+      "output_tokens": 1024,
+      "concurrency": 64,
+      "num_prompts": 128,
+      "prefix_hit_ratio": 0.95,
+      "successful": 0,
+      "failed": 128,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "atlas_95pct_prefix_cache"
+    },
+    {
+      "input_tokens": 2048,
+      "output_tokens": 1024,
+      "concurrency": 4,
+      "num_prompts": 8,
+      "prefix_hit_ratio": 0.0,
+      "successful": 0,
+      "failed": 8,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "context_sweep"
+    },
+    {
+      "input_tokens": 8192,
+      "output_tokens": 1024,
+      "concurrency": 4,
+      "num_prompts": 8,
+      "prefix_hit_ratio": 0.0,
+      "successful": 0,
+      "failed": 8,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "context_sweep"
+    },
+    {
+      "input_tokens": 15000,
+      "output_tokens": 1024,
+      "concurrency": 4,
+      "num_prompts": 8,
+      "prefix_hit_ratio": 0.0,
+      "successful": 0,
+      "failed": 8,
+      "errors": [
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]",
+        "Cannot connect to host vllm-v7x-16-spot-svc:8000 ssl:default [Connect call failed ('34.118.234.84', 8000)]"
+      ],
+      "suite": "context_sweep"
+    }
+  ],
+  "inferencex_crosscheck": null
+}
